@@ -2,8 +2,6 @@ package com.killxdcj.sp;
 
 import com.killxdcj.cmpp.meta.CmppActiveTestMeta;
 import com.killxdcj.cmpp.meta.CmppConnectMeta;
-import com.killxdcj.cmpp.packet.CmppActiveTest;
-import com.killxdcj.cmpp.packet.CmppConnectResp;
 import com.killxdcj.cmpp.packet.CmppPacket;
 import com.killxdcj.cmpp.packet.CmppPacketType;
 import com.killxdcj.sp.callback.CmppSpCallback;
@@ -27,7 +25,7 @@ import java.util.Map;
  * Date: 16/9/18
  * Time: 17:43
  */
-public class Client extends ChannelInboundHandlerAdapter{
+public class Client extends ChannelInboundHandlerAdapter {
     private String host;
     private int port;
     private String sourceAddr;
@@ -95,9 +93,10 @@ public class Client extends ChannelInboundHandlerAdapter{
             this.channel = b.connect(host, port).sync().channel();
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("start exception:" + e.toString());
         }
 
-        System.out.println("started");
+        System.out.println("client started");
     }
 
     public void stop() {
@@ -119,7 +118,7 @@ public class Client extends ChannelInboundHandlerAdapter{
         CmppConnectMeta connectMeta = new CmppConnectMeta();
         connectMeta.setSourceAddr(this.sourceAddr);
         connectMeta.setSharedSecret(this.sharedSecret);
-        connectMeta.setVersion(0x20);
+        connectMeta.setVersion(0x30);
 
         byte[] data = CmppPacketType.CMPP_CONNECT.getCodec().code(connectMeta);
         ByteBuf buf = Unpooled.buffer(data.length);
@@ -130,17 +129,19 @@ public class Client extends ChannelInboundHandlerAdapter{
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ByteBuf) {
-            ByteBuf data = (ByteBuf)msg;
-            if (data.readInt() != data.capacity()) {
-                //TODO log error parcket
+            ByteBuf data = (ByteBuf) msg;
+            long total_length = data.readUnsignedInt();
+            if (total_length != data.capacity()) {
+                System.out.println("读取到消息头Total_Length不匹配,total_length=" + total_length);
                 return;
             }
-            int cmd = data.readInt();
-
+            long command_id = data.readUnsignedInt();
+            long sequence_id = data.readUnsignedInt();
+            System.out.println("读取到消息头total_length=" + total_length + ",command_id=" + Long.toHexString(command_id) + ",sequence_id=" + sequence_id);
             byte[] dataByte = new byte[data.capacity()];
             data.readerIndex(0);
             data.readBytes(dataByte);
-            CmppPacket packet = (CmppPacket) CmppPacketType.fromInt(cmd).getCodec().decode(dataByte);
+            CmppPacket packet = (CmppPacket) CmppPacketType.parseCommand(command_id).getCodec().decode(dataByte);
             dispatchPacket(packet);
         }
     }
@@ -151,10 +152,10 @@ public class Client extends ChannelInboundHandlerAdapter{
     }
 
     private void dispatchPacket(CmppPacket packet) {
-        System.out.println(packet.toString());
+        System.out.println("读取到消息体" + packet.toString());
 
         synchronized (callbackTable) {
-            CmppPacketType packetType = CmppPacketType.fromInt(packet.getCommandId());
+            CmppPacketType packetType = CmppPacketType.parseCommand(packet.getCommandId());
             List<CmppSpCallback> callbacks = callbackTable.get(packetType);
             for (CmppSpCallback callback : callbacks) {
                 callback.onPacket(packet);

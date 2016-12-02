@@ -2,8 +2,8 @@ package com.killxdcj.cmpp.codec;
 
 import com.killxdcj.cmpp.meta.CmppConnectRespMeta;
 import com.killxdcj.cmpp.packet.CmppConnectResp;
-
-import java.nio.ByteBuffer;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,21 +19,22 @@ public class CmppConnectRespCodec implements CmppPacketCodec<CmppConnectRespMeta
 
     public CmppConnectResp decode(byte[] data) {
         CmppConnectResp connectResp = new CmppConnectResp();
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-
-        int totalLength = buffer.getInt();
+        //ByteBuffer buffer = ByteBuffer.wrap(data);
+        ByteBuf buffer = Unpooled.buffer();
+        buffer.writeBytes(data);
+        long totalLength = buffer.readUnsignedInt();
         if (totalLength != data.length) {
             return null;
         }
 
         connectResp.setTotalLength(totalLength);
-        connectResp.setCommandId(buffer.getInt());
-        connectResp.setSequenceId(buffer.getInt());
-        connectResp.setStatus(buffer.get());
+        connectResp.setCommandId(buffer.readUnsignedInt());
+        connectResp.setSequenceId(buffer.readUnsignedInt());
+        connectResp.setStatus(buffer.readUnsignedInt());
         byte[] auth = new byte[16];
-        buffer.get(auth, 0, 16);
+        buffer.readBytes(auth, 0, 16);
         connectResp.setAuthenticatorISMG(new String(auth));
-        connectResp.setVersion(buffer.get());
+        connectResp.setVersion(buffer.readByte());
 
         return connectResp;
     }

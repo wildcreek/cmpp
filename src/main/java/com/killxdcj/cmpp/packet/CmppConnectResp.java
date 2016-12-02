@@ -7,7 +7,7 @@ package com.killxdcj.cmpp.packet;
  * Time: 17:48
  */
 public class CmppConnectResp extends CmppPacket {
-    private int status;
+    private long status;
     private String AuthenticatorISMG;
     private int version;
 
@@ -15,17 +15,17 @@ public class CmppConnectResp extends CmppPacket {
 
     }
 
-    public CmppConnectResp(int status, String authenticatorISMG, int version) {
+    public CmppConnectResp(long status, String authenticatorISMG, int version) {
         this.status = status;
         AuthenticatorISMG = authenticatorISMG;
         this.version = version;
     }
 
-    public int getStatus() {
+    public long getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(long status) {
         this.status = status;
     }
 
