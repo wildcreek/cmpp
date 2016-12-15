@@ -1,5 +1,7 @@
 package com.killxdcj.cmpp.packet;
 
+import java.util.Arrays;
+
 /**
  * Created with IntelliJ IDEA.
  * User: caojianhua
@@ -7,38 +9,38 @@ package com.killxdcj.cmpp.packet;
  * Time: 11:46
  */
 public class CmppPacket {
-    protected long totalLength;
-    protected long commandId;
-    protected long sequenceId;
+    protected int totalLength;
+    protected int commandId;
+    protected int sequenceId;
 
-    public long getTotalLength() {
+    public int getTotalLength() {
         return totalLength;
     }
 
-    public long getCommandId() {
+    public int getCommandId() {
         return commandId;
     }
 
-    public long getSequenceId() {
+    public int getSequenceId() {
         return sequenceId;
     }
 
-    public void setTotalLength(long totalLength) {
+    public void setTotalLength(int totalLength) {
         this.totalLength = totalLength;
     }
 
-    public void setCommandId(long commandId) {
+    public void setCommandId(int commandId) {
         this.commandId = commandId;
     }
 
-    public void setSequenceId(long sequenceId) {
+    public void setSequenceId(int sequenceId) {
         this.sequenceId = sequenceId;
     }
 
     @Override
     public String toString() {
         return "CmppPacket{" +
-                "totalLength=" + totalLength +
+                ", totalLength=" + totalLength +
                 ", commandId=" + commandId +
                 ", sequenceId=" + sequenceId +
                 '}';

@@ -4,9 +4,8 @@ import com.killxdcj.cmpp.meta.CmppConnectMeta;
 import com.killxdcj.cmpp.packet.CmppConnect;
 import com.killxdcj.cmpp.packet.CmppPacketType;
 import com.killxdcj.cmpp.utils.CmppCommon;
+import com.killxdcj.cmpp.utils.PacketUtil;
 import com.killxdcj.cmpp.utils.TimeUtil;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
@@ -21,19 +20,15 @@ import java.security.NoSuchAlgorithmException;
 public class CmppConnectCodec implements CmppPacketCodec<CmppConnectMeta, CmppConnect> {
     public byte[] code(CmppConnectMeta packet) {
         String timeStamp = TimeUtil.genTimestampMdHms();
-//        ByteBuffer buffer = ByteBuffer.allocate(39);
-//        buffer.putInt(39);
-//        buffer.putInt(CmppPacketType.CMPP_CONNECT.getCommandId());
-//        buffer.putInt(CmppCommon.genSequence());
-//        buffer.put(PacketUtil.fixedBytes(packet.getSourceAddr().getBytes(), 6, true, true));
-//        buffer.put(getAuthenticatorSource(packet.getSourceAddr(), packet.getSharedSecret(), timeStamp));
-//        buffer.put((byte) packet.getVersion());
-//        buffer.putInt(Integer.parseInt(timeStamp));
-        ByteBuf buf = Unpooled.buffer(39);
-        buf.writeBytes(CmppCommon.int2ByteArray(39));
-        buf.writeBytes(CmppCommon.long2ByteArray(CmppPacketType.CMPP_CONNECT.getCommandId()));
-        buf.writeBytes(CmppCommon.int2ByteArray(CmppCommon.genSequence()));
-        return buf.array();
+        ByteBuffer buffer = ByteBuffer.allocate(39);
+        buffer.putInt(39);
+        buffer.putInt(CmppPacketType.CMPP_CONNECT.getCommandId());
+        buffer.putInt(CmppCommon.genSequence());
+        buffer.put(PacketUtil.fixedBytes(packet.getSourceAddr().getBytes(), 6, true, true));
+        buffer.put(getAuthenticatorSource(packet.getSourceAddr(), packet.getSharedSecret(), timeStamp));
+        buffer.put((byte) packet.getVersion());
+        buffer.putInt(Integer.parseInt(timeStamp));
+        return buffer.array();
     }
 
     public CmppConnect decode(byte[] data) {

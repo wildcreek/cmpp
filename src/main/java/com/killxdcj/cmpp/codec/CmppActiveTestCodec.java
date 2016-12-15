@@ -4,8 +4,8 @@ import com.killxdcj.cmpp.meta.CmppActiveTestMeta;
 import com.killxdcj.cmpp.packet.CmppActiveTest;
 import com.killxdcj.cmpp.packet.CmppPacketType;
 import com.killxdcj.cmpp.utils.CmppCommon;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+
+import java.nio.ByteBuffer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,18 +15,24 @@ import io.netty.buffer.Unpooled;
  */
 public class CmppActiveTestCodec implements CmppPacketCodec<CmppActiveTestMeta, CmppActiveTest>{
     public byte[] code(CmppActiveTestMeta packet) {
- //       ByteBuffer buffer = ByteBuffer.allocate(12);
-//        buffer.putInt(12);
-//        buffer.putInt(CmppPacketType.CMPP_ACTIVE_TEST.getCommandId());
-//        buffer.putInt(CmppCommon.genSequence());
-        ByteBuf buf = Unpooled.buffer(12);
-        buf.writeBytes(CmppCommon.int2ByteArray(12));
-        buf.writeBytes(CmppCommon.long2ByteArray(CmppPacketType.CMPP_ACTIVE_TEST.getCommandId()));
-        buf.writeBytes(CmppCommon.int2ByteArray(CmppCommon.genSequence()));
-        return buf.array();
+        ByteBuffer buffer = ByteBuffer.allocate(12);
+        buffer.putInt(12);
+        buffer.putInt(CmppPacketType.CMPP_ACTIVE_TEST.getCommandId());
+        buffer.putInt(CmppCommon.genSequence());
+        return buffer.array();
     }
 
     public CmppActiveTest decode(byte[] data) {
-        return null;
+        CmppActiveTest test = new CmppActiveTest();
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        int length = buffer.getInt();
+        if (length != data.length) {
+            return null;
+        }
+
+        test.setTotalLength(length);
+        test.setCommandId(buffer.getInt());
+        test.setSequenceId(buffer.getInt());
+        return test;
     }
 }

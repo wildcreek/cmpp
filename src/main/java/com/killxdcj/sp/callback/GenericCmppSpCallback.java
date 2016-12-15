@@ -11,7 +11,7 @@ import com.killxdcj.cmpp.packet.*;
 public abstract  class GenericCmppSpCallback implements CmppSpCallback {
 
     public void onPacket(CmppPacket packet) {
-        switch (CmppPacketType.parseCommand(packet.getCommandId())) {
+        switch (CmppPacketType.fromInt(packet.getCommandId())) {
             case CMPP_CONNECT_RESP:
                 onCmppConnectResp((CmppConnectResp)packet);
                 break;

@@ -2,8 +2,8 @@ package com.killxdcj.cmpp.codec;
 
 import com.killxdcj.cmpp.meta.CmppActiveTestRespMeta;
 import com.killxdcj.cmpp.packet.CmppActiveTestResp;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+
+import java.nio.ByteBuffer;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,18 +18,16 @@ public class CmppActiveTestRespCodec implements CmppPacketCodec<CmppActiveTestRe
 
     public CmppActiveTestResp decode(byte[] data) {
         CmppActiveTestResp activeTestResp = new CmppActiveTestResp();
-        //ByteBuffer buffer = ByteBuffer.wrap(data);
-        ByteBuf buf = Unpooled.buffer();
-        buf.writeBytes(data);
-        long totalLength = buf.readUnsignedInt();
+        ByteBuffer buffer = ByteBuffer.wrap(data);
+        int totalLength = buffer.getInt();
         if (totalLength != data.length) {
             return null;
         }
 
         activeTestResp.setTotalLength(totalLength);
-        activeTestResp.setCommandId(buf.readUnsignedInt());
-        activeTestResp.setSequenceId(buf.readUnsignedInt());
-        activeTestResp.setReserved(buf.readByte());
+        activeTestResp.setCommandId(buffer.getInt());
+        activeTestResp.setSequenceId(buffer.getInt());
+        activeTestResp.setReserved(buffer.get());
 
         return activeTestResp;
     }

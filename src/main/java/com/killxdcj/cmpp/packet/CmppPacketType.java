@@ -38,30 +38,26 @@ public enum CmppPacketType {
         }
     }
 
-    public static CmppPacketType parseCommand(long cmd) {
-        if(cmd == 0x00000001){
-            return CMPP_CONNECT;
-        }else if(cmd == 0x80000001){
-            return CMPP_CONNECT_RESP;
-        }else if(cmd == 0x00000008){
-            return CMPP_ACTIVE_TEST;
-        }else if(cmd == 0x80000008){
-            return CMPP_ACTIVE_TEST_RESP;
-        }else {
-            return null;
+    public static CmppPacketType fromInt(int cmd) {
+        switch (cmd) {
+            case 0x00000001:
+                return CMPP_CONNECT;
+            case 0x80000001:
+                return CMPP_CONNECT_RESP;
+            case 0x00000008:
+                return CMPP_ACTIVE_TEST;
+            case 0x80000008:
+                return CMPP_ACTIVE_TEST_RESP;
         }
+        return null;
     }
-//    public static CmppPacketType fromInt(int cmd) {
-//        switch (cmd) {
-//            case 0x00000001:
-//                return CMPP_CONNECT;
-//            case 0x80000001:
-//                return CMPP_CONNECT_RESP;
-//            case 0x00000008:
-//                return CMPP_ACTIVE_TEST;
-//            case 0x80000008:
-//                return CMPP_ACTIVE_TEST_RESP;
-//        }
-//        return null;
-//    }
+
+    @Override
+    public String toString() {
+        return "CmppPacketType{" +
+                "commandId=" + commandId +
+                ", packetStructure=" + packetStructure +
+                ", codec=" + codec +
+                '}';
+    }
 }

@@ -87,16 +87,16 @@ public class Client extends ChannelInboundHandlerAdapter {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline p = ch.pipeline();
                             p.addLast(new LengthFieldBasedFrameDecoder(1000, 0, 4, -4, 0), Client.this);
+                            //p.addLast(Client.this);
                         }
                     });
 
             this.channel = b.connect(host, port).sync().channel();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("start exception:" + e.toString());
         }
 
-        System.out.println("client started");
+        System.out.println("started");
     }
 
     public void stop() {
@@ -115,6 +115,7 @@ public class Client extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("channelActive方法调用了");
         CmppConnectMeta connectMeta = new CmppConnectMeta();
         connectMeta.setSourceAddr(this.sourceAddr);
         connectMeta.setSharedSecret(this.sharedSecret);
@@ -130,18 +131,19 @@ public class Client extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof ByteBuf) {
             ByteBuf data = (ByteBuf) msg;
-            long total_length = data.readUnsignedInt();
-            if (total_length != data.capacity()) {
-                System.out.println("读取到消息头Total_Length不匹配,total_length=" + total_length);
+            if (data.readInt() != data.capacity()) {
+                //TODO log error parcket
                 return;
             }
-            long command_id = data.readUnsignedInt();
-            long sequence_id = data.readUnsignedInt();
-            System.out.println("读取到消息头total_length=" + total_length + ",command_id=" + Long.toHexString(command_id) + ",sequence_id=" + sequence_id);
+            int cmd = data.readInt();
+            System.out.println("cmd=" + cmd);
             byte[] dataByte = new byte[data.capacity()];
+            System.out.println("data.capacity()=" + data.capacity());
             data.readerIndex(0);
             data.readBytes(dataByte);
-            CmppPacket packet = (CmppPacket) CmppPacketType.parseCommand(command_id).getCodec().decode(dataByte);
+            System.out.println("cmppPacketType=" + CmppPacketType.fromInt(cmd));
+            CmppPacket packet = (CmppPacket) CmppPacketType.fromInt(cmd).getCodec().decode(dataByte);
+            data.release();
             dispatchPacket(packet);
         }
     }
@@ -152,10 +154,11 @@ public class Client extends ChannelInboundHandlerAdapter {
     }
 
     private void dispatchPacket(CmppPacket packet) {
-        System.out.println("读取到消息体" + packet.toString());
+        System.out.println("dispatchPacket->packet=" + packet.toString());
 
         synchronized (callbackTable) {
-            CmppPacketType packetType = CmppPacketType.parseCommand(packet.getCommandId());
+            CmppPacketType packetType = CmppPacketType.fromInt(packet.getCommandId());
+            System.out.println("CmppPacketType->" + packetType.toString());
             List<CmppSpCallback> callbacks = callbackTable.get(packetType);
             for (CmppSpCallback callback : callbacks) {
                 callback.onPacket(packet);
