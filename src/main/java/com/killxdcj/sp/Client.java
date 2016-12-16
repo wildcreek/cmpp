@@ -104,7 +104,7 @@ public class Client extends ChannelInboundHandlerAdapter {
         eventLoopGroup.shutdownGracefully();
     }
 
-    public void sendMessage() {
+    public void sendActiveTest() {
 //        channel.writeAndFlush()
         CmppActiveTestMeta activeTestMeta = new CmppActiveTestMeta();
         byte[] data = CmppPacketType.CMPP_ACTIVE_TEST.getCodec().code(activeTestMeta);
@@ -112,6 +112,14 @@ public class Client extends ChannelInboundHandlerAdapter {
         buf.writeBytes(data);
         channel.writeAndFlush(buf);
     }
+
+    public void sendMessage() {
+        byte[] data = CmppPacketType.CMPP_SUBMIT.getCodec().code(null);
+        ByteBuf buf = Unpooled.buffer(data.length);
+        buf.writeBytes(data);
+        channel.writeAndFlush(buf);
+    }
+
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {

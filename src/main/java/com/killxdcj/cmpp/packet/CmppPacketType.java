@@ -12,7 +12,9 @@ public enum CmppPacketType {
     CMPP_CONNECT(0x00000001, CmppConnect.class, CmppConnectCodec.class),
     CMPP_CONNECT_RESP(0x80000001, CmppConnectResp.class, CmppConnectRespCodec.class),
     CMPP_ACTIVE_TEST(0x00000008, CmppActiveTest.class, CmppActiveTestCodec.class),
-    CMPP_ACTIVE_TEST_RESP(0x80000008, CmppActiveTestResp.class, CmppActiveTestRespCodec.class);
+    CMPP_ACTIVE_TEST_RESP(0x80000008, CmppActiveTestResp.class, CmppActiveTestRespCodec.class),
+    CMPP_SUBMIT(0x00000004, CmppSubmit.class, CmppSubmitCodec.class),
+    CMPP_SUBMIT_RESP(0x80000004,CmppSubmitResp.class, CmppSubmitRespCodec.class);
 
     private int commandId;
     private Class<? extends CmppPacket> packetStructure;
@@ -48,6 +50,10 @@ public enum CmppPacketType {
                 return CMPP_ACTIVE_TEST;
             case 0x80000008:
                 return CMPP_ACTIVE_TEST_RESP;
+            case 0x00000004:
+                return CMPP_SUBMIT;
+            case 0x80000004:
+                return CMPP_SUBMIT_RESP;
         }
         return null;
     }
