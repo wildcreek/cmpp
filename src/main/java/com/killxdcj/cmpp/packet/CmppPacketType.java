@@ -14,9 +14,9 @@ public enum CmppPacketType {
     CMPP_ACTIVE_TEST(0x00000008, CmppActiveTest.class, CmppActiveTestCodec.class),
     CMPP_ACTIVE_TEST_RESP(0x80000008, CmppActiveTestResp.class, CmppActiveTestRespCodec.class),
     CMPP_SUBMIT(0x00000004, CmppSubmit.class, CmppSubmitCodec.class),
-    CMPP_SUBMIT_RESP(0x80000004,CmppSubmitResp.class, CmppSubmitRespCodec.class),
+    CMPP_SUBMIT_RESP(0x80000004, CmppSubmitResp.class, CmppSubmitRespCodec.class),
     CMPP_DELIVER(0x00000005, CmppDeliver.class, CmppDeliverCodec.class),
-    CMPP_DELIVER_RESP(0x80000005,CmppDeliverResp.class, CmppDeliverRespCodec.class);
+    CMPP_DELIVER_RESP(0x80000005, CmppDeliverResp.class, CmppDeliverRespCodec.class);
 
     private int commandId;
     private Class<? extends CmppPacket> packetStructure;
@@ -66,10 +66,8 @@ public enum CmppPacketType {
 
     @Override
     public String toString() {
-        return "CmppPacketType{" +
-                "commandId=" + commandId +
-                ", packetStructure=" + packetStructure.getSimpleName() +
-                ", codec=" + codec.getSimpleName() +
-                '}';
+        return
+                "commandId为：" + commandId +
+                        ", 消息类型为：        +++++++++    " + packetStructure.getSimpleName() + "    +++++++++";
     }
 }

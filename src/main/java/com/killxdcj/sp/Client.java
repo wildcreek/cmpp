@@ -144,12 +144,10 @@ public class Client extends ChannelInboundHandlerAdapter {
                 return;
             }
             int cmd = data.readInt();
-            System.out.println("cmd=" + cmd);
             byte[] dataByte = new byte[data.capacity()];
-            System.out.println("data.capacity()=" + data.capacity());
             data.readerIndex(0);
             data.readBytes(dataByte);
-            System.out.println("cmppPacketType=" + CmppPacketType.fromInt(cmd));
+            System.out.println("接收到消息------- data.capacity()=" + data.capacity() + ", " + CmppPacketType.fromInt(cmd));
             CmppPacket packet = (CmppPacket) CmppPacketType.fromInt(cmd).getCodec().decode(dataByte);
             data.release();
             dispatchPacket(packet);
@@ -162,11 +160,10 @@ public class Client extends ChannelInboundHandlerAdapter {
     }
 
     private void dispatchPacket(CmppPacket packet) {
-        System.out.println("dispatchPacket->packet=" + packet.toString());
+        System.out.println("分发消息---------------" + packet.toString());
 
         synchronized (callbackTable) {
             CmppPacketType packetType = CmppPacketType.fromInt(packet.getCommandId());
-            System.out.println("CmppPacketType->" + packetType.toString());
             List<CmppSpCallback> callbacks = callbackTable.get(packetType);
             for (CmppSpCallback callback : callbacks) {
                 callback.onPacket(packet);
