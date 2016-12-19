@@ -14,7 +14,9 @@ public enum CmppPacketType {
     CMPP_ACTIVE_TEST(0x00000008, CmppActiveTest.class, CmppActiveTestCodec.class),
     CMPP_ACTIVE_TEST_RESP(0x80000008, CmppActiveTestResp.class, CmppActiveTestRespCodec.class),
     CMPP_SUBMIT(0x00000004, CmppSubmit.class, CmppSubmitCodec.class),
-    CMPP_SUBMIT_RESP(0x80000004,CmppSubmitResp.class, CmppSubmitRespCodec.class);
+    CMPP_SUBMIT_RESP(0x80000004,CmppSubmitResp.class, CmppSubmitRespCodec.class),
+    CMPP_DELIVER(0x00000005, CmppDeliver.class, CmppDeliverCodec.class),
+    CMPP_DELIVER_RESP(0x80000005,CmppDeliverResp.class, CmppDeliverRespCodec.class);
 
     private int commandId;
     private Class<? extends CmppPacket> packetStructure;
@@ -54,6 +56,10 @@ public enum CmppPacketType {
                 return CMPP_SUBMIT;
             case 0x80000004:
                 return CMPP_SUBMIT_RESP;
+            case 0x00000005:
+                return CMPP_DELIVER;
+            case 0x80000005:
+                return CMPP_DELIVER_RESP;
         }
         return null;
     }
@@ -62,8 +68,8 @@ public enum CmppPacketType {
     public String toString() {
         return "CmppPacketType{" +
                 "commandId=" + commandId +
-                ", packetStructure=" + packetStructure +
-                ", codec=" + codec +
+                ", packetStructure=" + packetStructure.getSimpleName() +
+                ", codec=" + codec.getSimpleName() +
                 '}';
     }
 }

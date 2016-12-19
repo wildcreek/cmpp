@@ -147,4 +147,11 @@ public abstract class CmppMessageHeader implements java.io.Serializable {
 		this.dt = dt;
 	}
 
+	public int getCommandId() {
+		return commandId;
+	}
+
+	public void setCommandId(int commandId) {
+		this.commandId = commandId;
+	}
 }

@@ -13,8 +13,8 @@ import java.nio.ByteBuffer;
  */
 public class CmppSubmitCodec implements CmppPacketCodec<CmppSubmit, CmppSubmit> {
     public byte[] code(CmppSubmit packet) {
-        CmppSubmit submit = new CmppSubmit(Constants.CMPP3_VERSION, "SENDSMS", "13651398480",
-                "01", "0", "10690179", "18903769013", "中文안녕하세요", "linkid");
+        CmppSubmit submit = new CmppSubmit(Constants.CMPP3_VERSION, "0101WZXX",
+                  "960000", "15201188208", "中文안녕하세요");
         submit.setMsgId(submit.getSequenceId());
         //ByteBuf buf = Unpooled.buffer();
 //        String timeStamp = TimeUtil.genTimestampMdHms();

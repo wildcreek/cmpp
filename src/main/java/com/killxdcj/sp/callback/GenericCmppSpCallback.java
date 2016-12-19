@@ -21,6 +21,9 @@ public abstract  class GenericCmppSpCallback implements CmppSpCallback {
             case CMPP_ACTIVE_TEST_RESP:
                 onCmppActiveTestResp((CmppActiveTestResp)packet);
                 break;
+            case CMPP_SUBMIT_RESP:
+                onCmppSubmitResp((CmppSubmitResp)packet);
+                break;
             default:
                 onDefaultPacket(packet);
                 break;
@@ -36,6 +39,10 @@ public abstract  class GenericCmppSpCallback implements CmppSpCallback {
     }
 
     protected void onCmppActiveTestResp(final CmppActiveTestResp activeTestResp) {
+
+    }
+
+    protected void onCmppSubmitResp(final CmppSubmitResp submitResp) {
 
     }
 

@@ -12,9 +12,9 @@ public class CmppSubmit extends CmppMessageHeader implements Cloneable {
 
 	long msgId = 0;
 
-	byte pkTotal = 0;
+	byte pkTotal = 1;
 
-	byte pkNumber = 0;
+	byte pkNumber = 1;
 
 	byte registeredDelivery = 1;
 
@@ -22,7 +22,7 @@ public class CmppSubmit extends CmppMessageHeader implements Cloneable {
 
 	String serviceId;// 10
 
-	byte feeUserType = 3;
+	byte feeUserType = 0;
 
 	String feeTerminalId;// 32
 
@@ -34,17 +34,17 @@ public class CmppSubmit extends CmppMessageHeader implements Cloneable {
 
 	byte msgFmt = 15;
 
-	String msgSrc;// 6
+	String msgSrc = "960000";// 6
 
-	String feeType;// 2
+	String feeType = "01";// 2
 
-	String feeCode;// 6
+	String feeCode = "0";// 6
 
 	String vaildTime = "";// 17
 
 	String atTime = "";// 17
 
-	String srcId;// 21
+	String srcId = "10658222";// 21
 
 	byte destUsrTl = 1;
 
@@ -93,9 +93,7 @@ public class CmppSubmit extends CmppMessageHeader implements Cloneable {
 		}
 	}
 
-	public CmppSubmit(byte version, String serviceId, String feeTerminalId,
-                      String feeType, String feeCode, String srcId, String destTerminalId, String msgContent,
-                      String linkId) {
+	public CmppSubmit(byte version, String serviceId,String srcId, String destTerminalId, String msgContent) {
 		super(Constants.CMPP_SUBMIT, version);
 		if (version == Constants.CMPP2_VERSION) {
 			terminalIdLen = 21;
@@ -106,11 +104,8 @@ public class CmppSubmit extends CmppMessageHeader implements Cloneable {
 			linkIdLen = 20;
 			submitExpMsgLen = Constants.CMPP3_SUBMIT_LEN_EXPMSGLEN;
 		}
-		// msgLength = (byte) msgContent.getBytes().length;
+		msgLength = (byte) msgContent.getBytes().length;
 		this.serviceId = serviceId;
-		this.feeTerminalId = feeTerminalId;
-		this.feeType = feeType;
-		this.feeCode = feeCode;
 		this.srcId = srcId;
 		this.setDestTerminalId(new String[] { destTerminalId });
 		try {
@@ -119,8 +114,6 @@ public class CmppSubmit extends CmppMessageHeader implements Cloneable {
 			// 不回出错
 			e.printStackTrace();
 		}
-		this.linkId = linkId;
-
 	}
 
 	protected boolean readBody(ByteBuffer buf) {

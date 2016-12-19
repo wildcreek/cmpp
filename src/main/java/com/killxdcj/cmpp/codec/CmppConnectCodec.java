@@ -47,6 +47,13 @@ public class CmppConnectCodec implements CmppPacketCodec<CmppConnectMeta, CmppCo
         connect.setSoureAddr(new String(sourceByte));
         byte[] authByte = new byte[16];
         buffer.get(authByte, 0, 16);
+
+//        char[] authChar = new char[16];
+//        for (int i = 0;i < authByte.length;i++){
+//            authChar[i] = (char)authByte[i];
+//        }
+//        System.out.println("authchar = " + authChar.toString());
+
         connect.setAuthenticatorSource(new String(authByte));
         connect.setVersion(buffer.get());
         connect.setTimestamp(buffer.getInt());
